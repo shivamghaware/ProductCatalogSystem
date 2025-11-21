@@ -17,7 +17,7 @@ This is a demo project for a Spring Boot application that provides a RESTful API
 
 2. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/shivamghaware/ProductCatalogSystem.git
    ```
 
 3. **Navigate to the project directory:**
