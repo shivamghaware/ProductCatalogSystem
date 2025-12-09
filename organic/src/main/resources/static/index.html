@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organic Product Catalog</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Organic Store</div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search products...">
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+        <a href="/login" class="btn-primary" style="text-decoration: none;"><i class="fas fa-sign-in-alt"></i> Login</a>
+    </nav>
+
+    <main class="container">
+        <div id="productGrid" class="product-grid">
+            <!-- Products will be injected here -->
+        </div>
+        <div id="noResults" class="no-results hidden">
+            <i class="fas fa-box-open"></i>
+            <p>No products found.</p>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
