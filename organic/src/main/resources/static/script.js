@@ -63,7 +63,7 @@ function renderProducts(products) {
             <div class="card-content">
                 <div class="card-header">
                     <span class="product-brand">${product.brand}</span>
-                    <span class="product-price">$${product.price.toFixed(2)}</span>
+                    <span class="product-price">₹${product.price.toFixed(2)}</span>
                 </div>
                 <h3 class="product-title">${product.name}</h3>
                 <p class="product-description">${product.description}</p>
