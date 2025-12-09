@@ -1,4 +1,4 @@
-INSERT INTO product (name, description, brand, price, category, release_date, available, quantity) VALUES
+INSERT INTO product (name, description, brand, price, category, release_date, product_available, stock_quantity) VALUES
 ('Organic Honey', 'Pure raw organic honey harvested naturally', 'NatureSweet', 9.99, 'Organic', '2025-03-10', TRUE, 150),
 ('Organic Almond Butter', 'Smooth almond butter with no additives', 'GreenHarvest', 12.50, 'Organic', '2025-03-10', TRUE, 80),
 ('Organic Quinoa', 'High-protein organic quinoa grains', 'EarthFoods', 7.25, 'Organic', '2025-03-10', TRUE, 200),
