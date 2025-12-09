@@ -24,7 +24,7 @@ public class Product {
     private BigDecimal price;
     private String category;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "DD-MM-YY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date releaseDate;
     private boolean productAvailable;
     private int stockQuantity;
@@ -32,5 +32,5 @@ public class Product {
     private String imageName;
     private String imageType;
     @Lob
-    private byte [] imageData;
+    private byte[] imageData;
 }

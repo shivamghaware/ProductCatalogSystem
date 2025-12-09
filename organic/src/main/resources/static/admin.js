@@ -4,6 +4,7 @@ const API_URL = '/api';
 const productGrid = document.getElementById('productGrid');
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
+const addProductBtn = document.getElementById('addProductBtn');
 const noResults = document.getElementById('noResults');
 
 // Event Listeners
@@ -19,6 +20,10 @@ searchInput.addEventListener('keypress', (e) => {
         const keyword = searchInput.value.trim();
         fetchProducts(keyword);
     }
+});
+
+addProductBtn.addEventListener('click', () => {
+    window.location.href = 'add-product.html';
 });
 
 // Functions
@@ -63,7 +68,7 @@ function renderProducts(products) {
             <div class="card-content">
                 <div class="card-header">
                     <span class="product-brand">${product.brand}</span>
-                    <span class="product-price">$${product.price.toFixed(2)}</span>
+                    <span class="product-price">$${product.price ? product.price.toFixed(2) : '0.00'}</span>
                 </div>
                 <h3 class="product-title">${product.name}</h3>
                 <p class="product-description">${product.description}</p>
@@ -71,10 +76,36 @@ function renderProducts(products) {
                     <span class="stock-status ${product.productAvailable ? 'in-stock' : 'out-of-stock'}">
                         ${product.productAvailable ? 'In Stock' : 'Out of Stock'}
                     </span>
-                    <!-- No Admin Actions here -->
+                    <div class="card-actions">
+                         <a href="edit-product.html?id=${product.id}" class="btn-icon edit" style="text-decoration: none;">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button class="btn-icon delete" onclick="deleteProduct(${product.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
         productGrid.appendChild(card);
     });
 }
+
+window.deleteProduct = async (id) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    try {
+        const response = await fetch(`${API_URL}/product/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            fetchProducts();
+        } else {
+            alert('Failed to delete product');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error deleting product');
+    }
+};

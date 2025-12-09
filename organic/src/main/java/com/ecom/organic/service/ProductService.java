@@ -15,28 +15,45 @@ public class ProductService {
     @Autowired
     private ProductRepo repo;
 
-    public List<Product> getAllProducts(){
+    public List<Product> getAllProducts() {
         return repo.findAll();
     }
 
-    public Product getProductById(int id){
+    public Product getProductById(int id) {
         return repo.findById(id).orElse(null);
     }
 
     public Product addProduct(Product product, MultipartFile imageFile) throws IOException {
-        product.setImageName(imageFile.getOriginalFilename());
-        product.setImageType(imageFile.getContentType());
-        product.setImageData(imageFile.getBytes());
-
+        if (imageFile != null && !imageFile.isEmpty()) {
+            product.setImageName(imageFile.getOriginalFilename());
+            product.setImageType(imageFile.getContentType());
+            product.setImageData(imageFile.getBytes());
+        }
         return repo.save(product);
     }
 
     public Product updateProduct(int prodId, Product product, MultipartFile imageFile) throws IOException {
-        product.setImageData(imageFile.getBytes());
-        product.setImageName(imageFile.getOriginalFilename());
-        product.setImageType(imageFile.getContentType());
+        Product existingProduct = repo.findById(prodId).orElse(null);
+        if (existingProduct != null) {
+            // Update fields
+            existingProduct.setName(product.getName());
+            existingProduct.setDescription(product.getDescription());
+            existingProduct.setBrand(product.getBrand());
+            existingProduct.setPrice(product.getPrice());
+            existingProduct.setCategory(product.getCategory());
+            existingProduct.setReleaseDate(product.getReleaseDate());
+            existingProduct.setProductAvailable(product.isProductAvailable());
+            existingProduct.setStockQuantity(product.getStockQuantity());
 
-        return repo.save(product);
+            // Update image only if provided
+            if (imageFile != null && !imageFile.isEmpty()) {
+                existingProduct.setImageName(imageFile.getOriginalFilename());
+                existingProduct.setImageType(imageFile.getContentType());
+                existingProduct.setImageData(imageFile.getBytes());
+            }
+            return repo.save(existingProduct);
+        }
+        return null; // Or throw exception
     }
 
     public void deleteProduct(int id) {

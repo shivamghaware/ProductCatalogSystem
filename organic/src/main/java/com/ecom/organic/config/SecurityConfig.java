@@ -21,13 +21,25 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index.html", "/style.css", "/script.js", "/favicon.ico").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll() // Allow all GET requests (viewing
-                                                                                // products)
-                        .anyRequest().authenticated() // Require authentication for everything else (POST, PUT, DELETE)
-                )
+                        .requestMatchers("/", "/index.html", "/login.html", "/style.css", "/script.js", "/favicon.ico",
+                                "/api/products/**", "/api/product/*/image")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers("/admin.html", "/admin.js", "/add-product.html", "/edit-product.html",
+                                "/product-form.js", "/api/product", "/api/product/**")
+                        .authenticated()
+                        .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults()) // Enable Basic Auth
-                .formLogin(Customizer.withDefaults()); // Enable Form Login
+                .formLogin(form -> form
+                        .loginPage("/login.html") // Custom login page
+                        .loginProcessingUrl("/login") // Submit URL
+                        .defaultSuccessUrl("/admin.html", true) // Redirect to admin after login
+                        .failureUrl("/login.html?error=true")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/index.html")
+                        .permitAll());
 
         return http.build();
     }
