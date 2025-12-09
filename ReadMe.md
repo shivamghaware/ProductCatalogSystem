@@ -53,6 +53,7 @@ A full-stack e-commerce application built with Spring Boot and vanilla JavaScrip
   - Spring Boot DevTools: Development utilities
 - **PostgreSQL**: Relational database
 - **Lombok**: Code generation library
+- **dotenv-java**: Environment variables management
 - **Maven**: Build and dependency management
 
 ### Frontend
@@ -65,36 +66,36 @@ A full-stack e-commerce application built with Spring Boot and vanilla JavaScrip
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Frontend Layer                        │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
-│  │  Index   │  │  Login   │  │  Admin   │  │ Add/Edit │   │
-│  │  Page    │  │  Page    │  │  Panel   │  │ Product  │   │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+│                        Frontend Layer                       │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐     │
+│  │  Index   │  │  Login   │  │  Admin   │  │ Add/Edit │     │
+│  │  Page    │  │  Page    │  │  Panel   │  │ Product  │     │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘     │
 └─────────────────────────────────────────────────────────────┘
                             ↕ HTTP/REST
 ┌─────────────────────────────────────────────────────────────┐
-│                     Spring Boot Backend                      │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │              Security Layer (Spring Security)         │  │
-│  │  - Form Login  - HTTP Basic  - CSRF Protection       │  │
-│  └──────────────────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │         Controller Layer (REST Controllers)           │  │
-│  │              ProductController (@RestController)      │  │
-│  └──────────────────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │            Service Layer (Business Logic)             │  │
-│  │                  ProductService                       │  │
-│  └──────────────────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │         Repository Layer (Data Access)                │  │
-│  │          ProductRepo (JPA Repository)                 │  │
-│  └──────────────────────────────────────────────────────┘  │
+│                     Spring Boot Backend                     │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │              Security Layer (Spring Security)        |   │
+│  │  - Form Login  - HTTP Basic  - CSRF Protection       │   │
+│  └──────────────────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │         Controller Layer (REST Controllers)          │   │
+│  │              ProductController (@RestController)     │   │
+│  └──────────────────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │            Service Layer (Business Logic)            │   │
+│  │                  ProductService                      │   │
+│  └──────────────────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │         Repository Layer (Data Access)               │   │
+│  │          ProductRepo (JPA Repository)                │   │
+│  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
                             ↕ JDBC
 ┌─────────────────────────────────────────────────────────────┐
-│                    PostgreSQL Database                       │
-│                      Product Table                           │
+│                    PostgreSQL Database                      │
+│                      Product Table                          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -141,15 +142,35 @@ CREATE USER adminuser WITH PASSWORD 'mypassword';
 GRANT ALL PRIVILEGES ON DATABASE productdb TO adminuser;
 ```
 
-### 3. Update Application Properties (Optional)
+### 3. Configure Environment Variables
 
-If your database credentials differ, edit `src/main/resources/application.properties`:
+The application uses environment variables for sensitive configuration. Create a `.env` file in the `organic` directory:
 
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/productdb
-spring.datasource.username=YOUR_USERNAME
-spring.datasource.password=YOUR_PASSWORD
+```bash
+# Copy the example file
+cp .env.example .env
 ```
+
+Edit the `.env` file with your actual credentials:
+
+```env
+# Database Configuration
+DB_URL=jdbc:postgresql://localhost:5432/productdb
+DB_USERNAME=adminuser
+DB_PASSWORD=mypassword
+
+# Security Configuration
+ADMIN_USERNAME=user
+ADMIN_PASSWORD=password
+```
+
+**🔒 Security Notes**:
+- The `.env` file is already added to `.gitignore` and will NOT be committed to version control
+- Never commit sensitive credentials to your repository
+- Use strong passwords in production
+- The `.env.example` file is provided as a template (safe to commit)
+
+**Alternative**: You can also set these as system environment variables instead of using a `.env` file.
 
 ### 4. Build the Project
 
@@ -197,8 +218,8 @@ The application will start on **http://localhost:8080**
 
 - **User Interface**: http://localhost:8080/index.html
 - **Admin Login**: http://localhost:8080/login.html
-  - Username: `user`
-  - Password: `password`
+  - Username: Set in `.env` file (default: `user`)
+  - Password: Set in `.env` file (default: `password`)
 - **Admin Panel**: http://localhost:8080/admin.html (requires authentication)
 
 ## 📚 API Documentation
@@ -410,6 +431,7 @@ ProductCatalogSystem/
 │   │   ├── main/
 │   │   │   ├── java/com/ecom/organic/
 │   │   │   │   ├── config/
+│   │   │   │   │   ├── DotenvConfig.java           # .env file loader
 │   │   │   │   │   └── SecurityConfig.java          # Spring Security configuration
 │   │   │   │   ├── controller/
 │   │   │   │   │   └── ProductController.java       # REST API endpoints
@@ -421,6 +443,8 @@ ProductCatalogSystem/
 │   │   │   │   │   └── ProductService.java          # Business logic
 │   │   │   │   └── OrganicApplication.java          # Main application class
 │   │   │   └── resources/
+│   │   │       ├── META-INF/
+│   │   │       │   └── spring.factories             # Spring initializers
 │   │   │       ├── static/
 │   │   │       │   ├── index.html                   # User homepage
 │   │   │       │   ├── login.html                   # Login page
@@ -435,6 +459,9 @@ ProductCatalogSystem/
 │   │   │       └── data.sql                         # Initial data (optional)
 │   │   └── test/                                    # Test files
 │   ├── target/                                      # Build output
+│   ├── .env                                         # Environment variables (gitignored)
+│   ├── .env.example                                 # Environment template
+│   ├── .gitignore                                   # Git ignore rules
 │   ├── pom.xml                                      # Maven configuration
 │   ├── mvnw                                         # Maven wrapper (Unix)
 │   └── mvnw.cmd                                     # Maven wrapper (Windows)
@@ -456,6 +483,8 @@ ProductCatalogSystem/
 - ✅ Responsive UI design
 - ✅ CORS configuration for API access
 - ✅ Custom build configuration (v3.0.jar)
+- ✅ Environment variables configuration with .env file
+- ✅ Externalized sensitive credentials for security
 
 ## 🐛 Known Issues & Limitations
 
