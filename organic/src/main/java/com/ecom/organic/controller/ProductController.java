@@ -2,7 +2,6 @@ package com.ecom.organic.controller;
 
 import com.ecom.organic.model.Product;
 import com.ecom.organic.service.ProductService;
-import org.apache.tomcat.util.file.ConfigurationSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
