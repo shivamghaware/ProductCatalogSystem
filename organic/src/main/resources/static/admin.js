@@ -73,9 +73,10 @@ function renderProducts(products) {
                 <h3 class="product-title">${product.name}</h3>
                 <p class="product-description">${product.description}</p>
                 <div class="card-footer">
-                    <span class="stock-status ${product.productAvailable ? 'in-stock' : 'out-of-stock'}">
-                        ${product.productAvailable ? 'In Stock' : 'Out of Stock'}
+                    <span class="stock-status ${product.productAvailable && product.stockQuantity > 0 ? 'in-stock' : 'out-of-stock'}">
+                        ${product.productAvailable && product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}
                     </span>
+                    ${product.productAvailable && product.stockQuantity > 0 ? `<span class="product-quantity">Quantity: ${product.stockQuantity}</span>` : ''}
                     <div class="card-actions">
                          <a href="edit-product.html?id=${product.id}" class="btn-icon edit" style="text-decoration: none;">
                             <i class="fas fa-edit"></i>
