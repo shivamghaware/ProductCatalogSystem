@@ -510,6 +510,138 @@ ProductCatalogSystem/
 - [ ] Add API rate limiting
 - [ ] Create Docker containerization
 
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### 1. Application Exits Immediately
+
+**Problem**: `mvn spring-boot:run` exits instead of keeping server running
+
+**Causes & Solutions**:
+
+**A. Wrong Directory**
+```bash
+# ❌ Wrong - Running from ProductCatalogSystem directory
+C:\...\ProductCatalogSystem> mvn spring-boot:run
+Error: No plugin found for prefix 'spring-boot'
+
+# ✅ Correct - Run from organic directory
+C:\...\ProductCatalogSystem\organic> .\mvnw.cmd spring-boot:run
+```
+
+**B. Port 8080 Already in Use**
+```bash
+# Check what's using port 8080
+netstat -ano | findstr :8080
+
+# Kill the process (replace PID with actual number)
+taskkill /PID <PID> /F
+
+# Or use a different port in application.properties
+server.port=8081
+```
+
+**C. Database Connection Failed**
+- Ensure PostgreSQL is running
+- Verify `.env` file exists and has correct credentials
+- Check database `productdb` exists
+
+#### 2. Environment Variables Not Loading
+
+**Problem**: `Could not resolve placeholder 'DB_URL'`
+
+**Solutions**:
+- Verify `.env` file exists in `organic/` directory
+- Check `DotenvConfig.java` exists
+- Verify `META-INF/spring.factories` is configured
+- Ensure `.env` has all required variables:
+  ```env
+  DB_URL=jdbc:postgresql://localhost:5432/productdb
+  DB_USERNAME=adminuser
+  DB_PASSWORD=mypassword
+  ADMIN_USERNAME=user
+  ADMIN_PASSWORD=password
+  ```
+
+#### 3. Schema Validation Error
+
+**Problem**: `Schema-validation: missing table [product]`
+
+**Solution**: Change in `application.properties`:
+```properties
+spring.jpa.hibernate.ddl-auto=update  # Instead of 'validate'
+```
+
+#### 4. Build Fails with Test Errors
+
+**Problem**: `mvn clean package` fails during test phase
+
+**Solutions**:
+- Ensure H2 dependency is in `pom.xml` with `test` scope
+- Verify `src/test/resources/application.properties` exists
+- Skip tests temporarily: `.\mvnw.cmd clean package -DskipTests`
+
+#### 5. Data Not Loading from data.sql
+
+**Problem**: Database is empty after startup
+
+**Solution**: Temporarily enable in `application.properties`:
+```properties
+spring.sql.init.mode=always
+spring.jpa.defer-datasource-initialization=true
+```
+
+After first run, change back to:
+```properties
+#spring.sql.init.mode=never
+#spring.jpa.defer-datasource-initialization=true
+```
+
+#### 6. Login Not Working
+
+**Problem**: Admin login fails with correct credentials
+
+**Checks**:
+- Verify credentials in `.env` file match what you're entering
+- Check `SecurityConfig.java` is using `@Value` annotations
+- Ensure `.env` variables are loaded (check startup logs)
+- Default credentials: username=`user`, password=`password`
+
+### Quick Diagnostic Commands
+
+```bash
+# Check if PostgreSQL is running
+sc query postgresql-x64-17
+
+# Check if port 8080 is available
+netstat -ano | findstr :8080
+
+# Verify .env file exists
+dir .env
+
+# Run with verbose output
+.\mvnw.cmd spring-boot:run -X
+
+# Check database connection
+psql -U adminuser -d productdb -c "SELECT version();"
+```
+
+### Getting Help
+
+If you encounter issues not covered here:
+
+1. Check the logs for specific error messages
+2. Review `ARCHITECTURE_VERIFICATION.md` for system details
+3. Ensure all prerequisites are installed
+4. Try a clean rebuild: `.\mvnw.cmd clean package`
+5. Open an issue on GitHub with:
+   - Error message
+   - Steps to reproduce
+   - Your environment (OS, Java version, PostgreSQL version)
+
+
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please follow these steps:
