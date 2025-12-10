@@ -65,7 +65,7 @@ async function fetchProductDetails(id) {
 
     } catch (error) {
         console.error('Error:', error);
-        alert('Failed to load product details');
+        toast.error('Failed to load product details');
     }
 }
 
@@ -106,14 +106,16 @@ productForm.addEventListener('submit', async (e) => {
         });
 
         if (response.ok) {
-            alert(isEditing ? 'Product Updated Successfully' : 'Product Added Successfully');
-            window.location.href = 'admin.html';
+            toast.success(isEditing ? 'Product updated successfully!' : 'Product added successfully!');
+            setTimeout(() => {
+                window.location.href = 'admin.html';
+            }, 1500);
         } else {
             const errorText = await response.text();
-            alert(`Failed to save product: ${errorText}`);
+            toast.error(`Failed to save product: ${errorText}`);
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Error saving product');
+        toast.error('Error saving product. Please try again.');
     }
 });
