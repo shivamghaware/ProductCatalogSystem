@@ -101,12 +101,14 @@ window.deleteProduct = async (id) => {
         });
 
         if (response.ok) {
+            toast.success('Product deleted successfully');
             fetchProducts();
         } else {
-            alert('Failed to delete product');
+            toast.error('Failed to delete product');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Error deleting product');
+        toast.error('Error deleting product. Please try again.');
     }
 };
+
