@@ -68,7 +68,7 @@ You can either:
 
 1. **No Hardcoded Credentials**: Sensitive data is externalized
 2. **Version Control Safe**: `.env` is gitignored
-3. **Environment-Specific**: Different credentials for dev/staging/prod
+3. **Environment-Specific**: Different credentials for dev/staging/prod 
 4. **Easy Rotation**: Change credentials without code changes
 5. **Team Collaboration**: Each developer can have their own `.env`
 
