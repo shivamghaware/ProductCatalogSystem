@@ -7,38 +7,39 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails> handleGlobalException(Exception ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(),
+                request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ErrorDetails> handleIOException(IOException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), "IO Error: " + ex.getMessage(),
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "IO Error: " + ex.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     // Define inner class or separate file for ErrorDetails
     static class ErrorDetails {
-        private Date timestamp;
+        private LocalDateTime timestamp;
         private String message;
         private String details;
 
-        public ErrorDetails(Date timestamp, String message, String details) {
+        public ErrorDetails(LocalDateTime timestamp, String message, String details) {
             super();
             this.timestamp = timestamp;
             this.message = message;
             this.details = details;
         }
 
-        public Date getTimestamp() {
+        public LocalDateTime getTimestamp() {
             return timestamp;
         }
 

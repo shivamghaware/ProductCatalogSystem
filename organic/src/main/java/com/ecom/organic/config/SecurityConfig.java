@@ -28,17 +28,18 @@ public class SecurityConfig {
                 http
                                 .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/api/**").permitAll()
                                                 .requestMatchers("/", "/index.html", "/login.html", "/style.css",
-                                                                "/script.js", "/favicon.ico",
-                                                                "/api/products/**", "/api/products/search",
+                                                                "/script.js", "/favicon.ico")
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/products/**",
                                                                 "/api/product/*/image")
                                                 .permitAll()
-                                                .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                                                 .requestMatchers("/admin.html", "/admin.js", "/add-product.html",
-                                                                "/edit-product.html",
-                                                                "/product-form.js", "/api/product", "/api/product/**")
+                                                                "/edit-product.html", "/product-form.js")
                                                 .authenticated()
+                                                .requestMatchers(HttpMethod.POST, "/api/product").authenticated()
+                                                .requestMatchers(HttpMethod.PUT, "/api/product/**").authenticated()
+                                                .requestMatchers(HttpMethod.DELETE, "/api/product/**").authenticated()
                                                 .anyRequest().authenticated())
                                 .httpBasic(Customizer.withDefaults()) // Enable Basic Auth
                                 .formLogin(form -> form

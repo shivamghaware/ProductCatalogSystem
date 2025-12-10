@@ -3,6 +3,8 @@ package com.ecom.organic.controller;
 import com.ecom.organic.model.Product;
 import com.ecom.organic.service.ProductService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.List;
 @CrossOrigin
 public class ProductController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private final ProductService service;
 
     public ProductController(ProductService service) {
@@ -45,6 +48,7 @@ public class ProductController {
             Product prod1 = service.addProduct(product, imageFile);
             return new ResponseEntity<>(prod1, HttpStatus.CREATED);
         } catch (Exception e) {
+            logger.error("Error adding product", e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -52,26 +56,28 @@ public class ProductController {
     @GetMapping("/product/{prodId}/image")
     public ResponseEntity<byte[]> getImageByProductID(@PathVariable int prodId) {
         Product prod = service.getProductById(prodId);
-        byte[] imageFile = prod.getImageData();
-        // return new ResponseEntity<>(imageFile,HttpStatus.OK);
+        if (prod == null || prod.getImageData() == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        return ResponseEntity.ok().contentType(MediaType.valueOf(prod.getImageType()))
-                .body(imageFile);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf(prod.getImageType()))
+                .body(prod.getImageData());
     }
 
     @PutMapping("/product/{prodId}")
     public ResponseEntity<String> updateProduct(@PathVariable int prodId,
             @RequestPart Product product,
             @RequestPart(required = false) MultipartFile imageFile) {
-        Product prod1 = null;
         try {
-            prod1 = service.updateProduct(prodId, product, imageFile);
+            Product prod1 = service.updateProduct(prodId, product, imageFile);
+            if (prod1 != null) {
+                return new ResponseEntity<>("Updated", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Failed to Update", HttpStatus.BAD_REQUEST);
+            }
         } catch (IOException e) {
-            return new ResponseEntity<>("Failed to Update", HttpStatus.BAD_REQUEST);
-        }
-        if (prod1 != null) {
-            return new ResponseEntity<>("Updated", HttpStatus.OK);
-        } else {
+            logger.error("Error updating product", e);
             return new ResponseEntity<>("Failed to Update", HttpStatus.BAD_REQUEST);
         }
     }
@@ -89,9 +95,9 @@ public class ProductController {
 
     @GetMapping("/products/search")
     public ResponseEntity<List<Product>> searchProducts(@RequestParam String keyword) {
-        System.out.println("Searching With " + keyword);
-        List<Product> product = service.searchProducts(keyword);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        logger.info("Searching with keyword: {}", keyword);
+        List<Product> products = service.searchProducts(keyword);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
 }
