@@ -30,6 +30,7 @@ public class DotenvConfig implements ApplicationContextInitializer<ConfigurableA
             dotenv.entries().forEach(entry -> {
                 envMap.put(entry.getKey(), entry.getValue());
             });
+            System.out.println("Successfully loaded .env file");
 
             environment.getPropertySources().addFirst(new MapPropertySource("dotenvProperties", envMap));
         } catch (Exception e) {

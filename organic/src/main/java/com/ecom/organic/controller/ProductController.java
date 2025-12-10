@@ -2,7 +2,7 @@ package com.ecom.organic.controller;
 
 import com.ecom.organic.model.Product;
 import com.ecom.organic.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,11 @@ import java.util.List;
 @CrossOrigin
 public class ProductController {
 
-    @Autowired
-    private ProductService service;
+    private final ProductService service;
+
+    public ProductController(ProductService service) {
+        this.service = service;
+    }
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {

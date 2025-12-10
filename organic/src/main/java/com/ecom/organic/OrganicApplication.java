@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class OrganicApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OrganicApplication.class, args);
+		SpringApplication app = new SpringApplication(OrganicApplication.class);
+		app.addInitializers(new com.ecom.organic.config.DotenvConfig());
+		app.run(args);
 	}
 
 }
