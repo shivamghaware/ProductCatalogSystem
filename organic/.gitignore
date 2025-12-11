@@ -2,7 +2,16 @@
 .env
 
 HELP.md
-target/
+# target/ - Commented out to include JAR files in Git
+# Instead, ignore specific files/folders within target except JARs
+target/classes/
+target/test-classes/
+target/generated-sources/
+target/generated-test-sources/
+target/maven-status/
+target/maven-archiver/
+target/surefire-reports/
+target/*.original
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
