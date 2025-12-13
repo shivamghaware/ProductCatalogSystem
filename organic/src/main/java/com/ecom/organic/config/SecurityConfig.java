@@ -41,7 +41,6 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.PUT, "/api/product/**").authenticated()
                                                 .requestMatchers(HttpMethod.DELETE, "/api/product/**").authenticated()
                                                 .anyRequest().authenticated())
-                                .httpBasic(Customizer.withDefaults()) // Enable Basic Auth
                                 .formLogin(form -> form
                                                 .loginPage("/login.html") // Custom login page
                                                 .loginProcessingUrl("/login") // Submit URL
