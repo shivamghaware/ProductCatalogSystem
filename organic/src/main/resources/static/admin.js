@@ -64,7 +64,9 @@ function renderProducts(products) {
         const imageUrl = product.id ? `${API_URL}/product/${product.id}/image` : 'placeholder.jpg';
 
         card.innerHTML = `
-            <img src="${imageUrl}" alt="${product.name}" class="card-image" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+            <div class="image-wrapper">
+                <img src="${imageUrl}" alt="${product.name}" class="card-image" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+            </div>
             <div class="card-content">
                 <div class="card-header">
                     <span class="product-brand">${product.brand}</span>
@@ -73,12 +75,11 @@ function renderProducts(products) {
                 <h3 class="product-title">${product.name}</h3>
                 <p class="product-description">${product.description}</p>
                 <div class="card-footer">
-                    <span class="stock-status ${product.productAvailable && product.stockQuantity > 0 ? 'in-stock' : 'out-of-stock'}">
-                        ${product.productAvailable && product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}
+                     <span class="product-quantity" style="${product.productAvailable && product.stockQuantity > 0 ? '' : 'color: var(--danger-color); font-weight: bold;'}">
+                        <i class="fas fa-boxes"></i> ${product.productAvailable && product.stockQuantity > 0 ? product.stockQuantity : 'Out of Stock'}
                     </span>
-                    ${product.productAvailable && product.stockQuantity > 0 ? `<span class="product-quantity">Quantity: ${product.stockQuantity}</span>` : ''}
                     <div class="card-actions">
-                         <a href="edit-product.html?id=${product.id}" class="btn-icon edit" style="text-decoration: none;">
+                         <a href="edit-product.html?id=${product.id}" class="btn-icon">
                             <i class="fas fa-edit"></i>
                         </a>
                         <button class="btn-icon delete" onclick="deleteProduct(${product.id})">
