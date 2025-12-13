@@ -20,6 +20,7 @@ public class DotenvConfig implements ApplicationContextInitializer<ConfigurableA
         try {
             // Load .env file from the root of the project
             Dotenv dotenv = Dotenv.configure()
+                    .directory(System.getProperty("user.dir"))
                     .ignoreIfMissing() // Don't fail if .env is missing (useful for production)
                     .load();
 
