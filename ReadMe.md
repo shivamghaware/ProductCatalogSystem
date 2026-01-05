@@ -22,6 +22,7 @@ A full-stack e-commerce application built with Spring Boot and vanilla JavaScrip
 - **Product Catalog**: Browse all available organic products with images
 - **Product Search**: Search products by name, brand, or category
 - **Product Details**: View detailed information including price, description, and availability
+- **User Registration**: Create personal accounts and log in
 - **Responsive Design**: Mobile-friendly interface for all devices
 - **Stock Visibility**: Real-time stock quantity display (hidden when out of stock)
 
@@ -347,6 +348,25 @@ PUT /api/product/{prodId}
 
 **Response**: `200 OK` or `400 Bad Request`
 
+#### 7. Register User
+```http
+POST /api/auth/register
+```
+**Description**: Register a new user account
+
+**Content-Type**: `application/json`
+
+**Request Body**:
+```json
+{
+  "username": "newuser",
+  "password": "secretpassword",
+  "email": "user@example.com"
+}
+```
+
+**Response**: `201 Created` or `400 Bad Request`
+
 #### 7. Delete Product (Protected)
 ```http
 DELETE /api/product/{id}
@@ -369,6 +389,7 @@ The application uses **Spring Security** with the following configuration:
   - All GET requests to `/api/**`
   - Product listing and search endpoints
   - Static resources (HTML, CSS, JS)
+  - Registration and Login pages (`/register.html`, `/login.html`, `/api/auth/**`)
   - Product images
 
 - **Protected Resources** (Authentication Required):
@@ -377,26 +398,31 @@ The application uses **Spring Security** with the following configuration:
   - POST, PUT, DELETE operations on `/api/product/**`
 
 ### Default Credentials
+**Admin User** (Created on startup if not exists):
 ```
-Username: user
+Username: admin
 Password: password
-Role: USER
+Role: ADMIN
 ```
+
+**Standard User**:
+- Register a new account via `/register.html`
 
 ### Login Configuration
 - **Login Page**: `/login.html`
 - **Login Processing URL**: `/login`
-- **Success Redirect**: `/admin.html`
+- **Success Redirect**: `/index.html` (or `/admin.html` based on logic)
 - **Logout URL**: `/logout`
 - **Logout Success**: `/index.html`
 
 ### Security Features
 - CSRF protection disabled for API simplicity
-- HTTP Basic authentication enabled
+- **Database Authentication**: Uses `DaoAuthenticationProvider` backed by PostgreSQL
+- **Password Encryption**: BCrypt hashing for secure password storage
 - Form-based login with custom page
-- In-memory user details service (for demo purposes)
+- Automatic Admin user seeding via `DataSeeder`
 
-**⚠️ Production Note**: Replace in-memory authentication with a proper user database and implement password encryption for production use.
+**⚠️ Production Note**: Change default admin password and secrets in `.env` for production.
 
 ## 🗄 Database Schema
 
@@ -416,6 +442,16 @@ Role: USER
 | image_name       | VARCHAR(255)  |                       | Uploaded image filename          |
 | image_type       | VARCHAR(50)   |                       | Image MIME type                  |
 | image_data       | BYTEA         |                       | Binary image data (LOB)          |
+
+### User Table
+
+| Column           | Type          | Constraints           | Description                      |
+|------------------|---------------|-----------------------|----------------------------------|
+| id               | BIGINT        | PRIMARY KEY, AUTO_INC | Unique user identifier           |
+| username         | VARCHAR(255)  | NOT NULL, UNIQUE      | User login name                  |
+| password         | VARCHAR(255)  | NOT NULL              | BCrypt encrypted password        |
+| email            | VARCHAR(255)  | NOT NULL, UNIQUE      | User email address               |
+| role             | VARCHAR(50)   |                       | User role (ROLE_USER, ROLE_ADMIN)|
 
 ### JPA Configuration
 - **Hibernate DDL**: `update` (auto-creates/updates schema)
@@ -485,14 +521,15 @@ ProductCatalogSystem/
 - ✅ Custom build configuration (v3.0.jar)
 - ✅ Environment variables configuration with .env file
 - ✅ Externalized sensitive credentials for security
+- ✅ Implemented User Registration and Management
+- ✅ Secure Database Authentication with BCrypt
+- ✅ Role-Based Access Control (Admin vs User)
 
 ## 🐛 Known Issues & Limitations
 
-- In-memory authentication (not suitable for production)
 - Images stored in database (consider file system or cloud storage for large scale)
 - No pagination for product listing
-- No user registration functionality
-- Single admin role (no role-based access control)
+- Basic role-based access control (needs refinement)
 
 ## 🚧 Future Enhancements
 

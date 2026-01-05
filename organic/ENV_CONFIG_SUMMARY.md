@@ -28,6 +28,8 @@ DB_PASSWORD=your_secure_password
 # Admin Access
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=secret_password
+ADMIN_EMAIL=admin@example.com
+
 ```
 
 ### Step 3: Run!
@@ -46,6 +48,7 @@ Here is a cheat sheet of the available configurations:
 | `DB_PASSWORD` | The DB password | `mypassword` |
 | `ADMIN_USERNAME` | Username to login to the Admin Dashboard | `user` |
 | `ADMIN_PASSWORD` | Password for the Admin Dashboard | `password` |
+| `ADMIN_EMAIL` | Email for the default Admin account | `admin@example.com` |
 
 > **Pro Tip**: If you delete the `.env` file, the app tries to fall back to the defaults listed above, or it might check your actual System Environment Variables. This is great for deployment!
 
