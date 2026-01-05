@@ -40,5 +40,17 @@ public class DataSeeder implements CommandLineRunner {
             userRepository.save(admin);
             System.out.println("Admin user created: " + adminUsername);
         }
+
+        // Check if seller exists
+        if (userRepository.findByUsername("seller").isEmpty()) {
+            User seller = new User();
+            seller.setUsername("seller");
+            seller.setPassword(passwordEncoder.encode("password")); // Default password
+            seller.setEmail("seller@example.com");
+            seller.setRole("ROLE_SELLER");
+
+            userRepository.save(seller);
+            System.out.println("Seller user created: seller");
+        }
     }
 }

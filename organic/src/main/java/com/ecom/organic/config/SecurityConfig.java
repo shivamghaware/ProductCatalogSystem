@@ -20,6 +20,9 @@ public class SecurityConfig {
         @Autowired
         private UserDetailsService userDetailsService;
 
+        @Autowired
+        private CustomAuthenticationSuccessHandler successHandler;
+
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
@@ -34,17 +37,19 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers("/admin.html", "/admin.js", "/add-product.html",
                                                                 "/edit-product.html", "/product-form.js")
-                                                .hasRole("ADMIN") // Only ADMIN can access admin pages
-                                                .requestMatchers(HttpMethod.POST, "/api/product").hasRole("ADMIN")
-                                                .requestMatchers(HttpMethod.PUT, "/api/product/**").hasRole("ADMIN")
-                                                .requestMatchers(HttpMethod.DELETE, "/api/product/**").hasRole("ADMIN")
+                                                .hasAnyRole("ADMIN", "SELLER") // ADMIN and SELLER can access admin
+                                                                               // pages
+                                                .requestMatchers(HttpMethod.POST, "/api/product")
+                                                .hasAnyRole("ADMIN", "SELLER")
+                                                .requestMatchers(HttpMethod.PUT, "/api/product/**")
+                                                .hasAnyRole("ADMIN", "SELLER")
+                                                .requestMatchers(HttpMethod.DELETE, "/api/product/**")
+                                                .hasAnyRole("ADMIN", "SELLER")
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login.html") // Custom login page
                                                 .loginProcessingUrl("/login") // Submit URL
-                                                .defaultSuccessUrl("/index.html", true) // Redirect to home first, maybe
-                                                                                        // handle role based redirect in
-                                                                                        // JS or CustomSuccessHandler
+                                                .successHandler(successHandler) // Use custom success handler
                                                 .failureUrl("/login.html?error=true")
                                                 .permitAll())
                                 .logout(logout -> logout
@@ -57,9 +62,8 @@ public class SecurityConfig {
 
         @Bean
         public AuthenticationProvider authenticationProvider() {
-                DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+                DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
                 provider.setPasswordEncoder(passwordEncoder());
-                provider.setUserDetailsService(userDetailsService);
                 return provider;
         }
 

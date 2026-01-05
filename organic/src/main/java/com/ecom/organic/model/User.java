@@ -25,5 +25,5 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String role; // e.g., "ROLE_USER", "ROLE_ADMIN"
+    private String role; // e.g., "ROLE_SELLER", "ROLE_ADMIN"
 }

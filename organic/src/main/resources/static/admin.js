@@ -8,7 +8,29 @@ const addProductBtn = document.getElementById('addProductBtn');
 const noResults = document.getElementById('noResults');
 
 // Event Listeners
-document.addEventListener('DOMContentLoaded', () => fetchProducts());
+// Event Listeners
+document.addEventListener('DOMContentLoaded', async () => {
+    fetchProducts();
+    await checkUserRole();
+});
+
+async function checkUserRole() {
+    try {
+        const response = await fetch('/api/auth/current-user');
+        if (response.ok) {
+            const auth = await response.json();
+            // Auth object has authorities array, e.g. [{authority: "ROLE_ADMIN"}, {authority: "ROLE_SELLER"}]
+            const authorities = auth.authorities || [];
+            const isAuthorized = authorities.some(a => a.authority === 'ROLE_ADMIN' || a.authority === 'ROLE_SELLER');
+
+            if (addProductBtn) {
+                addProductBtn.style.display = isAuthorized ? 'inline-block' : 'none';
+            }
+        }
+    } catch (error) {
+        console.error("Error checking user role:", error);
+    }
+}
 
 searchBtn.addEventListener('click', () => {
     const keyword = searchInput.value.trim();

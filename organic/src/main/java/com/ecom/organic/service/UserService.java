@@ -23,7 +23,7 @@ public class UserService {
             throw new RuntimeException("Email already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("ROLE_USER"); // Default role
+        user.setRole("ROLE_SELLER"); // Default role
         return userRepository.save(user);
     }
 }
