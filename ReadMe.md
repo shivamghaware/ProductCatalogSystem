@@ -405,13 +405,16 @@ Password: password
 Role: ADMIN
 ```
 
-**Standard User**:
-- Register a new account via `/register.html`
+**Standard User (Seller)**:
+- **Default Credentials** (Created on startup):
+  - Username: `seller`
+  - Password: `password`
+- **Registration**: New accounts created via `/register.html` default to `ROLE_SELLER`.
 
 ### Login Configuration
 - **Login Page**: `/login.html`
 - **Login Processing URL**: `/login`
-- **Success Redirect**: `/index.html` (or `/admin.html` based on logic)
+- **Success Redirect**: `/admin.html` (for both ADMIN and SELLER roles)
 - **Logout URL**: `/logout`
 - **Logout Success**: `/index.html`
 
@@ -451,7 +454,7 @@ Role: ADMIN
 | username         | VARCHAR(255)  | NOT NULL, UNIQUE      | User login name                  |
 | password         | VARCHAR(255)  | NOT NULL              | BCrypt encrypted password        |
 | email            | VARCHAR(255)  | NOT NULL, UNIQUE      | User email address               |
-| role             | VARCHAR(50)   |                       | User role (ROLE_USER, ROLE_ADMIN)|
+| role             | VARCHAR(50)   |                       | User role (ROLE_SELLER, ROLE_ADMIN)|
 
 ### JPA Configuration
 - **Hibernate DDL**: `update` (auto-creates/updates schema)
@@ -523,7 +526,9 @@ ProductCatalogSystem/
 - ✅ Externalized sensitive credentials for security
 - ✅ Implemented User Registration and Management
 - ✅ Secure Database Authentication with BCrypt
-- ✅ Role-Based Access Control (Admin vs User)
+- ✅ Role-Based Access Control (Admin vs Seller)
+- ✅ Default User Registration role is now SELLER
+- ✅ Auto-redirect to Product Management for authorized users
 
 ## 🐛 Known Issues & Limitations
 
@@ -533,7 +538,7 @@ ProductCatalogSystem/
 
 ## 🚧 Future Enhancements
 
-- [ ] Implement user registration and management
+
 - [ ] Add role-based access control (ADMIN, USER, GUEST)
 - [ ] Implement pagination and sorting
 - [ ] Add shopping cart functionality
